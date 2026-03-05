@@ -173,17 +173,18 @@ export const Layout: FC<LayoutProps> = ({ title, children }) => {
         <main class="max-w-4xl mx-auto px-4 py-8">{children}</main>
         <footer class="border-t border-border dark:border-border-dark mt-16">
           <div class="max-w-4xl mx-auto px-4 py-6 text-center text-xs text-sub dark:text-sub-dark font-body tracking-wide">
-            <p>
-              <a
-                href="https://news.smol.ai/"
-                class="hover:text-accent dark:hover:text-accent-dark transition-colors"
-                target="_blank"
-                rel="noopener"
-              >
-                news.smol.ai
-              </a>
-              {" "}&mdash;{" "}Workers AIで自動抽出
-            </p>
+            <a
+              href="https://github.com/ikumasudo/ainews"
+              target="_blank"
+              rel="noopener"
+              class="inline-block hover:opacity-70 transition-opacity"
+            >
+              <img
+                src="https://unpkg.com/lucide-static@latest/icons/github.svg"
+                alt="GitHub"
+                class="w-5 h-5 dark:invert"
+              />
+            </a>
           </div>
         </footer>
         <script
