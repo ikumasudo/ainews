@@ -1,0 +1,25 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "ainews",
+  "main": "src/index.tsx",
+  "compatibility_date": "2026-03-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "ainews",
+      "database_id": "b7538ac6-8028-4324-90ac-27551e2066b6",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "kv_namespaces": [
+    { "binding": "CACHE", "id": "d455ac016c804d71b89c2bb0aade70e3" }
+  ],
+  "triggers": {
+    "crons": ["0 */6 * * *"]
+  },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  }
+}
