@@ -35,8 +35,14 @@ export const HighlightCard: FC<{ highlight: Highlight; index?: number }> = ({
           {catLabel}
         </span>
       </div>
-      <h3 class="font-display text-lg font-bold leading-snug text-text dark:text-text-dark mb-2 hover:text-accent dark:hover:text-accent-dark transition-colors cursor-default">
-        {highlight.title}
+      <h3 class={`font-display text-lg font-bold leading-snug text-text dark:text-text-dark mb-2 hover:text-accent dark:hover:text-accent-dark transition-colors ${highlight.link ? "cursor-pointer" : "cursor-default"}`}>
+        {highlight.link ? (
+          <a href={highlight.link} target="_blank" rel="noopener">
+            {highlight.title}
+          </a>
+        ) : (
+          highlight.title
+        )}
       </h3>
       <p class="font-body text-sm text-sub dark:text-sub-dark leading-relaxed">
         {highlight.summary}

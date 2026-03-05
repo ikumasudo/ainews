@@ -22,6 +22,7 @@ export type Highlight = {
   summary: string;
   importance: "high" | "medium";
   category: Category;
+  link: string;
   created_at: string;
 };
 
@@ -38,6 +39,7 @@ export type AIHighlightResult = {
   summary: string;
   importance: "high" | "medium";
   category: Category;
+  link: string;
 };
 
 export type RSSItem = {

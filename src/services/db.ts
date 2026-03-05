@@ -29,10 +29,10 @@ export async function saveHighlights(
   const statements = highlights.map((h) =>
     db
       .prepare(
-        `INSERT INTO highlights (digest_id, title, summary, importance, category)
-         VALUES (?, ?, ?, ?, ?)`
+        `INSERT INTO highlights (digest_id, title, summary, importance, category, link)
+         VALUES (?, ?, ?, ?, ?, ?)`
       )
-      .bind(digestId, h.title, h.summary, h.importance, h.category)
+      .bind(digestId, h.title, h.summary, h.importance, h.category, h.link)
   );
 
   // Also mark digest as processed

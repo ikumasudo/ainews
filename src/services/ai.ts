@@ -1,5 +1,12 @@
 import type { AIHighlightResult } from "../types.ts";
 
+export function extractLinks(html: string): string {
+  return html.replace(/<a\s[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi, (_, url, text) => {
+    const cleanText = text.replace(/<[^>]+>/g, "").trim();
+    return `${cleanText} (${url})`;
+  });
+}
+
 export function stripHTML(html: string): string {
   return html
     .replace(/<script[\s\S]*?<\/script>/gi, "")
@@ -20,10 +27,11 @@ For each item, provide:
 - summary: 2-3 sentence summary (in Japanese)
 - importance: "high" for major breakthroughs/releases/funding, "medium" for notable but less impactful news
 - category: one of "model_release", "funding", "research", "product", "policy", "other"
+- link: The most relevant URL referenced in the news item (from the URLs in parentheses in the text). Use empty string "" if no URL is available.
 
 Respond ONLY with a valid JSON array. No markdown, no explanation.
 Example format:
-[{"title":"Example Title","summary":"要約文","importance":"high","category":"model_release"}]
+[{"title":"Example Title","summary":"要約文","importance":"high","category":"model_release","link":"https://example.com/article"}]
 
 Digest:
 `;
@@ -32,7 +40,8 @@ export async function extractHighlights(
   apiKey: string,
   rawContent: string
 ): Promise<AIHighlightResult[]> {
-  const plainText = stripHTML(rawContent);
+  const withLinks = extractLinks(rawContent);
+  const plainText = stripHTML(withLinks);
   // Truncate to ~50000 chars (Sonnet 4.6 has 200K context, but limit for cost control)
   const truncated = plainText.slice(0, 50000);
 
@@ -90,5 +99,6 @@ export async function extractHighlights(
       category: validCategories.has(item.category)
         ? item.category
         : "other",
+      link: typeof item.link === "string" ? item.link : "",
     }));
 }
