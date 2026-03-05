@@ -20,9 +20,9 @@ pages.get("/", async (c) => {
     return c.html(
       <Layout>
         <div class="text-center py-20">
-          <p class="text-2xl text-slate-400 mb-4">📭</p>
-          <p class="text-slate-400">まだデータがありません</p>
-          <p class="text-slate-500 text-sm mt-2">
+          <p class="text-2xl text-slate-500 dark:text-slate-400 mb-4">📭</p>
+          <p class="text-slate-500 dark:text-slate-400">まだデータがありません</p>
+          <p class="text-slate-400 dark:text-slate-500 text-sm mt-2">
             Cron Triggerが実行されるか、手動でフェッチしてください
           </p>
         </div>
@@ -56,8 +56,8 @@ pages.get("/:date{\\d{4}-\\d{2}-\\d{2}}", async (c) => {
       <Layout title={date}>
         <DateNav dates={dates} currentDate={date} />
         <div class="text-center py-20">
-          <p class="text-2xl text-slate-400 mb-4">📭</p>
-          <p class="text-slate-400">{date} のハイライトはありません</p>
+          <p class="text-2xl text-slate-500 dark:text-slate-400 mb-4">📭</p>
+          <p class="text-slate-500 dark:text-slate-400">{date} のハイライトはありません</p>
         </div>
       </Layout>
     );
@@ -70,8 +70,8 @@ pages.get("/:date{\\d{4}-\\d{2}-\\d{2}}", async (c) => {
       <DateNav dates={dates} currentDate={date} />
 
       <div class="mb-6">
-        <h1 class="text-2xl font-bold text-white mb-1">{date} のハイライト</h1>
-        <p class="text-slate-400 text-sm">
+        <h1 class="text-2xl font-bold text-slate-900 dark:text-white mb-1">{date} のハイライト</h1>
+        <p class="text-slate-500 dark:text-slate-400 text-sm">
           {highlights.length}件のニュース（重要: {highCount}件）
           {digest && (
             <span>

@@ -22,8 +22,8 @@ export const DateNav: FC<DateNavProps> = ({ dates, currentDate }) => {
         href={olderDate ? `/${olderDate}` : "#"}
         class={`flex-shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
           olderDate
-            ? "bg-surface-card hover:bg-surface-hover text-slate-300"
-            : "bg-surface-card/50 text-slate-600 pointer-events-none"
+            ? "bg-white dark:bg-surface-card hover:bg-slate-50 dark:hover:bg-surface-hover text-slate-600 dark:text-slate-300"
+            : "bg-slate-100 dark:bg-surface-card/50 text-slate-400 dark:text-slate-600 pointer-events-none"
         }`}
       >
         ◀ 前
@@ -36,7 +36,7 @@ export const DateNav: FC<DateNavProps> = ({ dates, currentDate }) => {
             class={`flex-shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
               date === currentDate
                 ? "bg-accent-purple/20 text-accent-purple ring-1 ring-accent-purple/50"
-                : "bg-surface-card hover:bg-surface-hover text-slate-400"
+                : "bg-white dark:bg-surface-card hover:bg-slate-50 dark:hover:bg-surface-hover text-slate-500 dark:text-slate-400"
             }`}
           >
             {formatDateShort(date)}
@@ -47,8 +47,8 @@ export const DateNav: FC<DateNavProps> = ({ dates, currentDate }) => {
         href={newerDate ? `/${newerDate}` : "#"}
         class={`flex-shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
           newerDate
-            ? "bg-surface-card hover:bg-surface-hover text-slate-300"
-            : "bg-surface-card/50 text-slate-600 pointer-events-none"
+            ? "bg-white dark:bg-surface-card hover:bg-slate-50 dark:hover:bg-surface-hover text-slate-600 dark:text-slate-300"
+            : "bg-slate-100 dark:bg-surface-card/50 text-slate-400 dark:text-slate-600 pointer-events-none"
         }`}
       >
         次 ▶

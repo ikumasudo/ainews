@@ -11,11 +11,16 @@ export const Layout: FC<LayoutProps> = ({ title, children }) => {
     : "AI News ハイライト";
 
   return (
-    <html lang="ja" class="dark">
+    <html lang="ja">
       <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{pageTitle}</title>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var s=localStorage.getItem('theme');if(s==='dark'||(!s&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.classList.add('dark')}})();`,
+          }}
+        />
         <script src="https://cdn.tailwindcss.com"></script>
         <script
           dangerouslySetInnerHTML={{
@@ -37,24 +42,28 @@ export const Layout: FC<LayoutProps> = ({ title, children }) => {
         <style
           dangerouslySetInnerHTML={{
             __html: `
-              body { background: #0f172a; color: #e2e8f0; }
-              .card-gradient { background: linear-gradient(135deg, #1e293b 0%, #1a2332 100%); }
-              .high-border { border-left: 3px solid #f87171; }
-              .medium-border { border-left: 3px solid #fbbf24; }
+              body { background: #f8fafc; color: #334155; }
+              .dark body { background: #0f172a; color: #e2e8f0; }
+              .card-gradient { background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); }
+              .dark .card-gradient { background: linear-gradient(135deg, #1e293b 0%, #1a2332 100%); }
+              .high-border { border-left: 3px solid #ef4444; }
+              .dark .high-border { border-left: 3px solid #f87171; }
+              .medium-border { border-left: 3px solid #d97706; }
+              .dark .medium-border { border-left: 3px solid #fbbf24; }
             `,
           }}
         />
       </head>
       <body class="min-h-screen">
-        <header class="border-b border-slate-700/50 backdrop-blur-sm sticky top-0 z-10 bg-surface/80">
+        <header class="border-b border-slate-200 dark:border-slate-700/50 backdrop-blur-sm sticky top-0 z-10 bg-white/80 dark:bg-surface/80">
           <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-            <a href="/" class="flex items-center gap-2 text-xl font-bold text-white hover:text-accent-purple transition-colors">
+            <a href="/" class="flex items-center gap-2 text-xl font-bold text-slate-900 dark:text-white hover:text-accent-purple transition-colors">
               <span class="text-2xl">⚡</span>
               <span>AI News ハイライト</span>
             </a>
             <button
               id="theme-toggle"
-              class="p-2 rounded-lg hover:bg-surface-hover transition-colors text-slate-400 hover:text-white"
+              class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-surface-hover transition-colors text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
               aria-label="テーマ切替"
             >
               🌙
@@ -62,7 +71,7 @@ export const Layout: FC<LayoutProps> = ({ title, children }) => {
           </div>
         </header>
         <main class="max-w-5xl mx-auto px-4 py-6">{children}</main>
-        <footer class="border-t border-slate-700/50 mt-12">
+        <footer class="border-t border-slate-200 dark:border-slate-700/50 mt-12">
           <div class="max-w-5xl mx-auto px-4 py-6 text-center text-sm text-slate-500">
             <p>
               データソース:{" "}
@@ -83,9 +92,14 @@ export const Layout: FC<LayoutProps> = ({ title, children }) => {
             __html: `
               const toggle = document.getElementById('theme-toggle');
               const html = document.documentElement;
+              function updateIcon() {
+                toggle.textContent = html.classList.contains('dark') ? '🌙' : '☀️';
+              }
+              updateIcon();
               toggle.addEventListener('click', () => {
                 html.classList.toggle('dark');
-                toggle.textContent = html.classList.contains('dark') ? '🌙' : '☀️';
+                localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+                updateIcon();
               });
             `,
           }}

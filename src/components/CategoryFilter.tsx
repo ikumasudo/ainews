@@ -2,7 +2,7 @@ import type { FC } from "hono/jsx";
 import type { Category } from "../types.ts";
 
 const categories: { key: "all" | Category; label: string; color: string }[] = [
-  { key: "all", label: "全て", color: "bg-slate-500/20 text-slate-300" },
+  { key: "all", label: "全て", color: "bg-slate-500/20 text-slate-600 dark:text-slate-300" },
   {
     key: "model_release",
     label: "モデル",

@@ -16,7 +16,7 @@ export const HighlightCard: FC<{ highlight: Highlight }> = ({ highlight }) => {
 
   return (
     <div
-      class={`card-gradient rounded-lg p-4 ${isHigh ? "high-border" : "medium-border"} hover:bg-surface-hover transition-colors`}
+      class={`card-gradient rounded-lg p-4 ${isHigh ? "high-border" : "medium-border"} hover:bg-slate-50 dark:hover:bg-surface-hover transition-colors`}
       data-category={highlight.category}
       data-importance={highlight.importance}
     >
@@ -36,10 +36,10 @@ export const HighlightCard: FC<{ highlight: Highlight }> = ({ highlight }) => {
           {cat.label}
         </span>
       </div>
-      <h3 class="text-white font-semibold mb-2 leading-snug">
+      <h3 class="text-slate-900 dark:text-white font-semibold mb-2 leading-snug">
         {highlight.title}
       </h3>
-      <p class="text-slate-400 text-sm leading-relaxed">{highlight.summary}</p>
+      <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">{highlight.summary}</p>
     </div>
   );
 };
