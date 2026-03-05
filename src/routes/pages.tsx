@@ -19,10 +19,11 @@ pages.get("/", async (c) => {
   if (!latestDate) {
     return c.html(
       <Layout>
-        <div class="text-center py-20">
-          <p class="text-2xl text-slate-500 dark:text-slate-400 mb-4">📭</p>
-          <p class="text-slate-500 dark:text-slate-400">まだデータがありません</p>
-          <p class="text-slate-400 dark:text-slate-500 text-sm mt-2">
+        <div class="text-center py-24">
+          <p class="font-display text-lg text-sub dark:text-sub-dark italic">
+            &mdash; まだデータがありません &mdash;
+          </p>
+          <p class="font-body text-sub dark:text-sub-dark text-sm mt-3">
             Cron Triggerが実行されるか、手動でフェッチしてください
           </p>
         </div>
@@ -55,9 +56,10 @@ pages.get("/:date{\\d{4}-\\d{2}-\\d{2}}", async (c) => {
     return c.html(
       <Layout title={date}>
         <DateNav dates={dates} currentDate={date} />
-        <div class="text-center py-20">
-          <p class="text-2xl text-slate-500 dark:text-slate-400 mb-4">📭</p>
-          <p class="text-slate-500 dark:text-slate-400">{date} のハイライトはありません</p>
+        <div class="text-center py-24">
+          <p class="font-display text-lg text-sub dark:text-sub-dark italic">
+            &mdash; {date} のハイライトはありません &mdash;
+          </p>
         </div>
       </Layout>
     );
@@ -69,31 +71,27 @@ pages.get("/:date{\\d{4}-\\d{2}-\\d{2}}", async (c) => {
     <Layout title={date}>
       <DateNav dates={dates} currentDate={date} />
 
-      <div class="mb-6">
-        <h1 class="text-2xl font-bold text-slate-900 dark:text-white mb-1">{date} のハイライト</h1>
-        <p class="text-slate-500 dark:text-slate-400 text-sm">
-          {highlights.length}件のニュース（重要: {highCount}件）
-          {digest && (
-            <span>
-              {" "}|{" "}
-              <a
-                href={digest.link}
-                class="text-accent-blue hover:underline"
-                target="_blank"
-                rel="noopener"
-              >
-                元記事を読む ↗
-              </a>
-            </span>
-          )}
+      <div class="flex items-baseline justify-between mb-6">
+        <p class="font-body text-xs text-sub dark:text-sub-dark tracking-wide">
+          {highlights.length}件 &mdash; 重要 {highCount}件
         </p>
+        {digest && (
+          <a
+            href={digest.link}
+            class="font-body text-xs text-sub dark:text-sub-dark hover:text-accent dark:hover:text-accent-dark transition-colors"
+            target="_blank"
+            rel="noopener"
+          >
+            元記事を読む &rarr;
+          </a>
+        )}
       </div>
 
       <CategoryFilter />
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {highlights.map((h) => (
-          <HighlightCard key={h.id} highlight={h} />
+      <div class="grid grid-cols-1 gap-0">
+        {highlights.map((h, i) => (
+          <HighlightCard key={h.id} highlight={h} index={i} />
         ))}
       </div>
     </Layout>

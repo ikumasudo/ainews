@@ -1,45 +1,46 @@
 import type { FC } from "hono/jsx";
 import type { Highlight, Category } from "../types.ts";
 
-const categoryConfig: Record<Category, { label: string; color: string }> = {
-  model_release: { label: "モデル", color: "bg-purple-500/20 text-accent-purple" },
-  funding: { label: "資金", color: "bg-green-500/20 text-accent-green" },
-  research: { label: "研究", color: "bg-blue-500/20 text-accent-blue" },
-  product: { label: "製品", color: "bg-orange-500/20 text-accent-orange" },
-  policy: { label: "政策", color: "bg-red-500/20 text-accent-red" },
-  other: { label: "その他", color: "bg-slate-500/20 text-accent-gray" },
+const categoryLabels: Record<Category, string> = {
+  model_release: "MODEL",
+  funding: "FUNDING",
+  research: "RESEARCH",
+  product: "PRODUCT",
+  policy: "POLICY",
+  other: "OTHER",
 };
 
-export const HighlightCard: FC<{ highlight: Highlight }> = ({ highlight }) => {
-  const cat = categoryConfig[highlight.category] ?? categoryConfig.other;
+export const HighlightCard: FC<{ highlight: Highlight; index?: number }> = ({
+  highlight,
+  index = 0,
+}) => {
+  const catLabel = categoryLabels[highlight.category] ?? categoryLabels.other;
   const isHigh = highlight.importance === "high";
 
   return (
-    <div
-      class={`card-gradient rounded-lg p-4 ${isHigh ? "high-border" : "medium-border"} hover:bg-slate-50 dark:hover:bg-surface-hover transition-colors`}
+    <article
+      class="card-reveal card-hover border-t border-border dark:border-border-dark pt-5 pb-6"
+      style={`--i: ${index}`}
       data-category={highlight.category}
       data-importance={highlight.importance}
     >
-      <div class="flex items-center gap-2 mb-2">
-        <span
-          class={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-            isHigh
-              ? "bg-red-500/20 text-accent-red"
-              : "bg-yellow-500/20 text-accent-yellow"
-          }`}
-        >
-          {isHigh ? "HIGH" : "MED"}
-        </span>
-        <span
-          class={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${cat.color}`}
-        >
-          {cat.label}
+      <div class="flex items-center gap-3 mb-3">
+        {isHigh && (
+          <span class="inline-flex items-center gap-1 text-accent dark:text-accent-dark text-xs font-body font-medium tracking-wider">
+            <span class="text-[10px]">{"\u25CF"}</span>
+            重要
+          </span>
+        )}
+        <span class="text-sub dark:text-sub-dark text-[11px] font-body font-medium tracking-[0.15em] uppercase">
+          {catLabel}
         </span>
       </div>
-      <h3 class="text-slate-900 dark:text-white font-semibold mb-2 leading-snug">
+      <h3 class="font-display text-lg font-bold leading-snug text-text dark:text-text-dark mb-2 hover:text-accent dark:hover:text-accent-dark transition-colors cursor-default">
         {highlight.title}
       </h3>
-      <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">{highlight.summary}</p>
-    </div>
+      <p class="font-body text-sm text-sub dark:text-sub-dark leading-relaxed">
+        {highlight.summary}
+      </p>
+    </article>
   );
 };

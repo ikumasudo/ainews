@@ -1,39 +1,32 @@
 import type { FC } from "hono/jsx";
 import type { Category } from "../types.ts";
 
-const categories: { key: "all" | Category; label: string; color: string }[] = [
-  { key: "all", label: "全て", color: "bg-slate-500/20 text-slate-600 dark:text-slate-300" },
-  {
-    key: "model_release",
-    label: "モデル",
-    color: "bg-purple-500/20 text-accent-purple",
-  },
-  { key: "funding", label: "資金", color: "bg-green-500/20 text-accent-green" },
-  {
-    key: "research",
-    label: "研究",
-    color: "bg-blue-500/20 text-accent-blue",
-  },
-  {
-    key: "product",
-    label: "製品",
-    color: "bg-orange-500/20 text-accent-orange",
-  },
-  { key: "policy", label: "政策", color: "bg-red-500/20 text-accent-red" },
-  { key: "other", label: "その他", color: "bg-slate-500/20 text-accent-gray" },
+const categories: { key: "all" | Category; label: string }[] = [
+  { key: "all", label: "全て" },
+  { key: "model_release", label: "モデル" },
+  { key: "funding", label: "資金" },
+  { key: "research", label: "研究" },
+  { key: "product", label: "製品" },
+  { key: "policy", label: "政策" },
+  { key: "other", label: "その他" },
 ];
 
 export const CategoryFilter: FC = () => {
   return (
-    <div class="flex flex-wrap gap-2 mb-6">
-      {categories.map((cat) => (
-        <button
-          key={cat.key}
-          data-filter={cat.key}
-          class={`filter-chip px-3 py-1.5 rounded-full text-sm font-medium transition-all cursor-pointer ${cat.color} hover:opacity-80 ${cat.key === "all" ? "ring-1 ring-slate-400/50" : ""}`}
-        >
-          {cat.label}
-        </button>
+    <div class="flex items-center gap-1 mb-8 overflow-x-auto font-body text-sm">
+      {categories.map((cat, i) => (
+        <>
+          {i > 0 && (
+            <span class="text-border dark:text-border-dark select-none">|</span>
+          )}
+          <button
+            key={cat.key}
+            data-filter={cat.key}
+            class={`filter-chip filter-item px-2 py-1 text-sub dark:text-sub-dark hover:text-text dark:hover:text-text-dark transition-colors cursor-pointer whitespace-nowrap ${cat.key === "all" ? "filter-active text-text dark:text-text-dark" : ""}`}
+          >
+            {cat.label}
+          </button>
+        </>
       ))}
       <script
         dangerouslySetInnerHTML={{
@@ -41,15 +34,17 @@ export const CategoryFilter: FC = () => {
             document.addEventListener('DOMContentLoaded', () => {
               const chips = document.querySelectorAll('.filter-chip');
               const cards = document.querySelectorAll('[data-category]');
-              let active = 'all';
 
               chips.forEach(chip => {
                 chip.addEventListener('click', () => {
                   const filter = chip.dataset.filter;
-                  active = filter;
 
-                  chips.forEach(c => c.classList.remove('ring-1', 'ring-slate-400/50'));
-                  chip.classList.add('ring-1', 'ring-slate-400/50');
+                  chips.forEach(c => {
+                    c.classList.remove('filter-active', 'text-text', 'dark:text-text-dark');
+                    c.classList.add('text-sub', 'dark:text-sub-dark');
+                  });
+                  chip.classList.add('filter-active', 'text-text', 'dark:text-text-dark');
+                  chip.classList.remove('text-sub', 'dark:text-sub-dark');
 
                   cards.forEach(card => {
                     if (filter === 'all' || card.dataset.category === filter) {
