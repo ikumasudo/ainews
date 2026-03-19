@@ -104,3 +104,29 @@ bun --hot ./index.ts
 ```
 
 For more information, read the Bun API docs in `node_modules/bun-types/docs/**.mdx`.
+
+## Design Context
+
+### Users
+AI業界のプロフェッショナル（エンジニア、リサーチャー、プロダクトマネージャー）が、毎日の習慣としてAIニュースをチェックする。朝のコーヒーを飲みながら、あるいは業務の合間に素早く最新動向を把握するのが主な利用シーン。情報の正確さと一覧性が最優先。
+
+### Brand Personality
+**知的・洗練・静謐**
+
+高品質な日本の新聞・雑誌の紙面を思わせる、落ち着いたトーン。派手さや遊び心よりも、信頼感と品格を重視する。情報を邪魔しない、控えめで美しいデザイン。
+
+### Aesthetic Direction
+- **Visual tone**: Editorial / newspaper-inspired, typography-driven
+- **Palette**: Warm neutral (cream/dark brown) with single vermillion (朱色) accent
+- **Typography**: Shippori Mincho B1 (display), Noto Sans JP (body), Cormorant Garamond (accent/dates)
+- **Theme**: Light & dark mode, class-based switching
+- **Texture**: Subtle paper grain overlay (3% opacity SVG noise)
+- **Anti-patterns**: Generic AI aesthetics (gradients, neon accents, emoji icons, colored pill badges, purple/blue palettes). Avoid anything that looks like a typical tech blog or SaaS dashboard.
+
+### Design Principles
+
+1. **Typography first** — Let typefaces and hierarchy carry the design. Avoid decorative elements where type alone can communicate structure and importance.
+2. **Quiet confidence** — Every element should feel intentional and restrained. If in doubt, remove rather than add. White space is a feature, not a gap to fill.
+3. **Information density without clutter** — Professionals want to scan efficiently. Prioritize scannability through clear hierarchy, not through visual noise.
+4. **Warmth through materiality** — Use warm neutrals, paper texture, and serif typography to evoke the tactile quality of print media, contrasting the cold digital norm.
+5. **Single accent discipline** — Vermillion (朱色) is the only accent color. Use it sparingly for maximum impact — importance markers and active states only.
