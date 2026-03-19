@@ -37,7 +37,6 @@ export const Layout: FC<LayoutProps> = ({ title, children }) => {
                   extend: {
                     colors: {
                       bg: { DEFAULT: '#FAF7F2', dark: '#1A1814' },
-                      surface: { DEFAULT: '#FFFFFF', dark: '#242018' },
                       text: { DEFAULT: '#1A1814', dark: '#F0EBE3' },
                       sub: { DEFAULT: '#6B6560', dark: '#9B9590' },
                       accent: '#C23B22',
@@ -58,14 +57,13 @@ export const Layout: FC<LayoutProps> = ({ title, children }) => {
         <style
           dangerouslySetInnerHTML={{
             __html: `
-              body {
-                background: #FAF7F2;
-                color: #1A1814;
-                font-family: 'Noto Sans JP', sans-serif;
+              :root {
+                --color-accent: #C23B22;
+                --shadow-card: 0 4px 12px rgba(0,0,0,0.06);
               }
-              .dark body {
-                background: #1A1814;
-                color: #F0EBE3;
+              .dark {
+                --color-accent: #D94F3A;
+                --shadow-card: 0 4px 12px rgba(0,0,0,0.3);
               }
 
               /* Grain overlay */
@@ -104,10 +102,7 @@ export const Layout: FC<LayoutProps> = ({ title, children }) => {
               }
               .card-hover:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-              }
-              .dark .card-hover:hover {
-                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                box-shadow: var(--shadow-card);
               }
 
               /* Filter underline animation */
@@ -121,13 +116,10 @@ export const Layout: FC<LayoutProps> = ({ title, children }) => {
                 left: 0;
                 width: 100%;
                 height: 2px;
-                background: #C23B22;
+                background: var(--color-accent);
                 transform: scaleX(0);
                 transform-origin: left;
                 transition: transform 0.25s ease;
-              }
-              .dark .filter-item::after {
-                background: #D94F3A;
               }
               .filter-item:hover::after,
               .filter-active::after {
@@ -137,7 +129,7 @@ export const Layout: FC<LayoutProps> = ({ title, children }) => {
           }}
         />
       </head>
-      <body class="min-h-screen font-body">
+      <body class="min-h-screen font-body bg-bg dark:bg-bg-dark text-text dark:text-text-dark">
         <header class="border-b border-border dark:border-border-dark">
           <div class="max-w-4xl mx-auto px-4 py-5 flex items-center justify-between">
             <a href="/" class="flex items-baseline gap-2 group">
