@@ -4,7 +4,6 @@ import {
   getHighlightsByDate,
   getAvailableDates,
 } from "../services/db.ts";
-import { processFeedsAndClearCache } from "../services/pipeline.ts";
 
 const api = new Hono<{ Bindings: Env }>();
 
@@ -48,12 +47,6 @@ api.get("/dates", async (c) => {
   );
 
   return c.json(response);
-});
-
-// Manual fetch & process trigger
-api.post("/fetch", async (c) => {
-  const result = await processFeedsAndClearCache(c.env);
-  return c.json(result);
 });
 
 export default api;
