@@ -22,7 +22,7 @@ function parseRSS(xml: string): RSSItem[] {
     const link = extractTag(itemXml, "link");
     const pubDate = extractTag(itemXml, "pubDate");
     const content =
-      extractCDATA(itemXml, "content:encoded") ||
+      extractTag(itemXml, "content:encoded") ||
       extractTag(itemXml, "description");
 
     if (title && link && pubDate && content) {
@@ -49,14 +49,6 @@ function extractTag(xml: string, tag: string): string {
     `<${escapedTag}[^>]*>([\\s\\S]*?)</${escapedTag}>`
   ).exec(xml);
   return match ? decodeXMLEntities(match[1]!.trim()) : "";
-}
-
-function extractCDATA(xml: string, tag: string): string {
-  const escapedTag = tag.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const match = new RegExp(
-    `<${escapedTag}[^>]*>\\s*<!\\[CDATA\\[([\\s\\S]*?)\\]\\]>\\s*</${escapedTag}>`
-  ).exec(xml);
-  return match ? match[1]!.trim() : "";
 }
 
 function decodeXMLEntities(str: string): string {

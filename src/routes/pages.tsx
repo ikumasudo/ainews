@@ -101,7 +101,7 @@ pages.get("/:date{\\d{4}-\\d{2}-\\d{2}}", async (c) => {
   const htmlString = html.toString();
   c.executionCtx.waitUntil(cache.put(cacheKey, htmlString, { expirationTtl: 3600 }));
 
-  return c.html(html);
+  return c.html(htmlString);
 });
 
 export default pages;

@@ -15,18 +15,17 @@ export const CategoryFilter: FC = () => {
   return (
     <div class="flex items-center gap-1 mb-8 overflow-x-auto font-body text-sm">
       {categories.map((cat, i) => (
-        <>
+        <div key={cat.key} class="contents">
           {i > 0 && (
             <span class="text-border dark:text-border-dark select-none">|</span>
           )}
           <button
-            key={cat.key}
             data-filter={cat.key}
             class={`filter-chip filter-item px-2 py-1 text-sub dark:text-sub-dark hover:text-text dark:hover:text-text-dark transition-colors cursor-pointer whitespace-nowrap ${cat.key === "all" ? "filter-active text-text dark:text-text-dark" : ""}`}
           >
             {cat.label}
           </button>
-        </>
+        </div>
       ))}
       <script
         dangerouslySetInnerHTML={{
