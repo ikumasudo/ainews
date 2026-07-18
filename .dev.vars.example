@@ -1,0 +1,2 @@
+# OpenRouter API key used by the scheduled AI highlight extraction pipeline.
+OPENROUTER_API_KEY=replace-with-your-openrouter-api-key
