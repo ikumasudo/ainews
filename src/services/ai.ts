@@ -1,4 +1,36 @@
 import type { AIHighlightResult } from "../types.ts";
+import { z } from "zod";
+
+const categorySchema = z.enum([
+  "model_release",
+  "funding",
+  "research",
+  "product",
+  "policy",
+  "other",
+]);
+
+const httpUrlSchema = z.string().refine((value) => {
+  if (value === "") return true;
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" || url.protocol === "http:";
+  } catch {
+    return false;
+  }
+}, "link must be an empty string or an HTTP(S) URL");
+
+const highlightSchema = z
+  .object({
+    title: z.string().trim().min(1).max(300),
+    summary: z.string().trim().min(1).max(2_000),
+    importance: z.enum(["high", "medium"]),
+    category: categorySchema,
+    link: httpUrlSchema,
+  })
+  .strict();
+
+const highlightResponseSchema = z.array(highlightSchema).min(1).max(8);
 
 export function extractLinks(html: string): string {
   return html.replace(/<a\s[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi, (_, url, text) => {
@@ -36,6 +68,31 @@ Example format:
 Digest:
 `;
 
+export function parseHighlightResponse(responseText: string): AIHighlightResult[] {
+  const trimmed = responseText.trim();
+  const jsonText = trimmed.startsWith("```")
+    ? trimmed.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "")
+    : trimmed;
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(jsonText);
+  } catch {
+    throw new Error("AI response was not valid JSON");
+  }
+
+  const result = highlightResponseSchema.safeParse(parsed);
+  if (!result.success) {
+    const issues = result.error.issues
+      .slice(0, 3)
+      .map((issue) => `${issue.path.join(".") || "response"}: ${issue.message}`)
+      .join("; ");
+    throw new Error(`AI response schema validation failed: ${issues}`);
+  }
+
+  return result.data;
+}
+
 export async function extractHighlights(
   apiKey: string,
   rawContent: string
@@ -69,36 +126,5 @@ export async function extractHighlights(
   };
   const responseText = data.choices[0]?.message?.content ?? "";
 
-  // Extract JSON array from response
-  const jsonMatch = responseText.match(/\[[\s\S]*\]/);
-  if (!jsonMatch) {
-    throw new Error("AI response did not contain valid JSON array");
-  }
-
-  const parsed: AIHighlightResult[] = JSON.parse(jsonMatch[0]);
-
-  // Validate and normalize
-  const validCategories = new Set([
-    "model_release",
-    "funding",
-    "research",
-    "product",
-    "policy",
-    "other",
-  ]);
-
-  return parsed
-    .filter(
-      (item) =>
-        item.title && item.summary && item.importance && item.category
-    )
-    .map((item) => ({
-      title: item.title,
-      summary: item.summary,
-      importance: item.importance === "high" ? "high" : "medium",
-      category: validCategories.has(item.category)
-        ? item.category
-        : "other",
-      link: typeof item.link === "string" ? item.link : "",
-    }));
+  return parseHighlightResponse(responseText);
 }

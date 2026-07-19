@@ -42,12 +42,12 @@ mise exec -- bun run dev
 ## 検証
 
 ```bash
-mise exec -- bun run types
-mise exec -- bunx tsc --noEmit
-mise exec -- bun run build
+mise exec -- bun run check
 ```
 
-`build`はWranglerのdry-runであり、Cloudflareへデプロイしません。
+`check`はテスト、TypeScript型チェック、Wranglerのdry-runビルドを順に実行します。dry-runはCloudflareへデプロイしません。
+
+GitHub ActionsもPull Requestと`main`へのpushで同じ検証を実行します。デプロイ処理は含まず、既存のCloudflare Git連携による自動デプロイとは独立しています。
 
 ## 本番操作
 
