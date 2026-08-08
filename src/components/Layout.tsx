@@ -170,12 +170,12 @@ export const Layout: FC<LayoutProps> = ({ title, children }) => {
               target="_blank"
               rel="noopener"
               class="inline-block hover:opacity-70 transition-opacity"
+              aria-label="GitHub"
             >
-              <img
-                src="https://unpkg.com/lucide-static@latest/icons/github.svg"
-                alt="GitHub"
-                class="w-5 h-5 dark:invert"
-              />
+              <svg aria-hidden="true" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3.28-.36 6.72-1.61 6.72-7.05A5.5 5.5 0 0 0 19.22 3.67 5.07 5.07 0 0 0 19.08.13S17.9-.25 15 1.6a13.4 13.4 0 0 0-7 0C5.1-.25 3.92.13 3.92.13a5.07 5.07 0 0 0-.14 3.54 5.5 5.5 0 0 0-1.5 3.78c0 5.42 3.44 6.67 6.72 7.05A4.8 4.8 0 0 0 8 18v4" />
+                <path d="M8 19c-3 .9-3-1.5-4-2" />
+              </svg>
             </a>
           </div>
         </footer>

@@ -1,6 +1,6 @@
 # ainews
 
-Cloudflare Workers、Hono、D1、KVで動作するAIニュースダイジェストです。定期処理がRSSを取得し、OpenRouterを使って重要ニュースを抽出します。
+Cloudflare Workers、Hono、D1で動作するAIニュースダイジェストです。定期処理がRSSを取得し、OpenRouterを使って重要ニュースを抽出します。
 
 ## 必要なもの
 

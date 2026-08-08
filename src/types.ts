@@ -1,9 +1,3 @@
-export type Env = {
-  OPENROUTER_API_KEY: string;
-  DB: D1Database;
-  CACHE: KVNamespace;
-};
-
 export type Digest = {
   id: number;
   date: string;

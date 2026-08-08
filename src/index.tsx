@@ -1,15 +1,9 @@
 import { Hono } from "hono";
-import type { Env } from "./types.ts";
 import pages from "./routes/pages.tsx";
-import api from "./routes/api.ts";
-import { processFeedsAndClearCache } from "./services/pipeline.ts";
+import { processFeeds } from "./services/pipeline.ts";
 
 const app = new Hono<{ Bindings: Env }>();
 
-// API routes
-app.route("/api", api);
-
-// SSR pages
 app.route("/", pages);
 
 export default {
@@ -21,7 +15,7 @@ export default {
     _ctx: ExecutionContext
   ) {
     try {
-      const result = await processFeedsAndClearCache(env);
+      const result = await processFeeds(env);
       console.log(JSON.stringify({ event: "cron.completed", ...result }));
     } catch (error) {
       console.error(
@@ -33,4 +27,4 @@ export default {
       throw error;
     }
   },
-};
+} satisfies ExportedHandler<Env>;

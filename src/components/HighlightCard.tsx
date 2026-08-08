@@ -22,7 +22,6 @@ export const HighlightCard: FC<{ highlight: Highlight; index?: number }> = ({
       class="card-reveal card-hover border-t border-border dark:border-border-dark pt-5 pb-6"
       style={`--i: ${index}`}
       data-category={highlight.category}
-      data-importance={highlight.importance}
     >
       <div class="flex items-center gap-3 mb-3">
         {isHigh && (
