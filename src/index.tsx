@@ -16,16 +16,21 @@ export default {
   fetch: app.fetch,
 
   async scheduled(
-    controller: ScheduledController,
+    _controller: ScheduledController,
     env: Env,
-    ctx: ExecutionContext
+    _ctx: ExecutionContext
   ) {
-    ctx.waitUntil(
-      processFeedsAndClearCache(env).then((result) => {
-        console.log(
-          `Cron: Fetched ${result.fetched} items, ${result.new_digests} new, ${result.processed} processed`
-        );
-      })
-    );
+    try {
+      const result = await processFeedsAndClearCache(env);
+      console.log(JSON.stringify({ event: "cron.completed", ...result }));
+    } catch (error) {
+      console.error(
+        JSON.stringify({
+          event: "cron.failed",
+          error: error instanceof Error ? error.message : String(error),
+        })
+      );
+      throw error;
+    }
   },
 };
