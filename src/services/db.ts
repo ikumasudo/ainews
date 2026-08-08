@@ -18,7 +18,7 @@ export async function saveDigest(
     )
     .bind(digest.date, digest.title, digest.link, digest.pub_date, digest.raw_content)
     .run();
-  return result.meta.last_row_id;
+  return result.meta.changes > 0 ? result.meta.last_row_id : 0;
 }
 
 export async function saveHighlights(

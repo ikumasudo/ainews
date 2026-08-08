@@ -2,7 +2,9 @@ import type { RSSItem } from "../types.ts";
 import { XMLParser, XMLValidator } from "fast-xml-parser";
 
 const RSS_URL = "https://news.smol.ai/rss.xml";
-const MAX_RSS_BYTES = 2 * 1024 * 1024;
+const MAX_RSS_PREFIX_BYTES = 2 * 1024 * 1024;
+const MAX_RSS_ITEMS = 50;
+const ITEM_END_TAG = "</item>";
 
 const parser = new XMLParser({
   ignoreAttributes: false,
@@ -16,14 +18,26 @@ export async function fetchRSSFeed(): Promise<RSSItem[]> {
   if (!response.ok) {
     throw new Error(`RSS fetch failed: ${response.status}`);
   }
-  const xml = await readTextWithLimit(response, MAX_RSS_BYTES);
+  const xml = await readRSSPrefix(
+    response,
+    MAX_RSS_PREFIX_BYTES,
+    MAX_RSS_ITEMS
+  );
   return parseRSS(xml);
 }
 
-async function readTextWithLimit(response: Response, maxBytes: number): Promise<string> {
-  const declaredLength = Number(response.headers.get("content-length"));
-  if (Number.isFinite(declaredLength) && declaredLength > maxBytes) {
-    throw new Error(`RSS response exceeded ${maxBytes} bytes`);
+/**
+ * Read only the newest part of the feed. news.smol.ai keeps its full history in
+ * one ever-growing XML document, with newest items first, so buffering the
+ * complete response would eventually exceed any fixed size limit.
+ */
+export async function readRSSPrefix(
+  response: Response,
+  maxBytes: number,
+  maxItems: number
+): Promise<string> {
+  if (!Number.isInteger(maxItems) || maxItems < 1) {
+    throw new Error("maxItems must be a positive integer");
   }
 
   if (!response.body) return "";
@@ -32,18 +46,39 @@ async function readTextWithLimit(response: Response, maxBytes: number): Promise<
   const decoder = new TextDecoder();
   let total = 0;
   let text = "";
+  let scanFrom = 0;
+  let itemCount = 0;
 
   while (true) {
     const { done, value } = await reader.read();
-    if (done) break;
-    total += value.byteLength;
-    if (total > maxBytes) {
-      await reader.cancel();
-      throw new Error(`RSS response exceeded ${maxBytes} bytes`);
+
+    if (value) {
+      total += value.byteLength;
+      if (total > maxBytes) {
+        await reader.cancel();
+        throw new Error(
+          `RSS prefix exceeded ${maxBytes} bytes before ${maxItems} items were read`
+        );
+      }
+      text += decoder.decode(value, { stream: true });
     }
-    text += decoder.decode(value, { stream: true });
+
+    if (done) {
+      return text + decoder.decode();
+    }
+
+    while (true) {
+      const itemEnd = text.indexOf(ITEM_END_TAG, scanFrom);
+      if (itemEnd === -1) break;
+
+      itemCount++;
+      scanFrom = itemEnd + ITEM_END_TAG.length;
+      if (itemCount === maxItems) {
+        await reader.cancel();
+        return `${text.slice(0, scanFrom)}</channel></rss>`;
+      }
+    }
   }
-  return text + decoder.decode();
 }
 
 function stringValue(value: unknown): string {
