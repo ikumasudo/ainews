@@ -12,9 +12,6 @@
       "migrations_dir": "migrations"
     }
   ],
-  "kv_namespaces": [
-    { "binding": "CACHE", "id": "d455ac016c804d71b89c2bb0aade70e3" }
-  ],
   "triggers": {
     "crons": ["0 */6 * * *"]
   },

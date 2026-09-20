@@ -115,12 +115,9 @@ export function parseRSS(xml: string): RSSItem[] {
 }
 
 export function normalizeDate(pubDate: string): string {
-  const date = new Date(pubDate);
-  if (Number.isNaN(date.getTime())) {
+  try {
+    return new Date(pubDate).toISOString().slice(0, 10);
+  } catch {
     throw new Error(`Invalid RSS publication date: ${pubDate}`);
   }
-  const year = date.getUTCFullYear();
-  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
-  const day = String(date.getUTCDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
 }

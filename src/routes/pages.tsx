@@ -1,5 +1,4 @@
 import { Hono } from "hono";
-import type { Env } from "../types.ts";
 import { Layout } from "../components/Layout.tsx";
 import { HighlightCard } from "../components/HighlightCard.tsx";
 import { DateNav } from "../components/DateNav.tsx";
@@ -37,14 +36,6 @@ pages.get("/", async (c) => {
 pages.get("/:date{\\d{4}-\\d{2}-\\d{2}}", async (c) => {
   const date = c.req.param("date");
   const db = c.env.DB;
-  const cache = c.env.CACHE;
-
-  // Check KV cache
-  const cacheKey = `page:${date}`;
-  const cached = await cache.get(cacheKey);
-  if (cached) {
-    return c.html(cached);
-  }
 
   const [highlights, dates, digest] = await Promise.all([
     getHighlightsByDate(db, date),
@@ -67,7 +58,7 @@ pages.get("/:date{\\d{4}-\\d{2}-\\d{2}}", async (c) => {
 
   const highCount = highlights.filter((h) => h.importance === "high").length;
 
-  const html = (
+  return c.html(
     <Layout title={date}>
       <DateNav dates={dates} currentDate={date} />
 
@@ -96,12 +87,6 @@ pages.get("/:date{\\d{4}-\\d{2}-\\d{2}}", async (c) => {
       </div>
     </Layout>
   );
-
-  // Cache rendered page (1 hour)
-  const htmlString = html.toString();
-  c.executionCtx.waitUntil(cache.put(cacheKey, htmlString, { expirationTtl: 3600 }));
-
-  return c.html(htmlString);
 });
 
 export default pages;

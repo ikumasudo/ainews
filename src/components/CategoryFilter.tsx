@@ -13,7 +13,7 @@ const categories: { key: "all" | Category; label: string }[] = [
 
 export const CategoryFilter: FC = () => {
   return (
-    <div class="flex items-center gap-1 mb-8 overflow-x-auto font-body text-sm">
+    <div data-filters class="flex items-center gap-1 mb-8 overflow-x-auto font-body text-sm">
       {categories.map((cat, i) => (
         <div key={cat.key} class="contents">
           {i > 0 && (
@@ -30,29 +30,18 @@ export const CategoryFilter: FC = () => {
       <script
         dangerouslySetInnerHTML={{
           __html: `
-            document.addEventListener('DOMContentLoaded', () => {
-              const chips = document.querySelectorAll('.filter-chip');
-              const cards = document.querySelectorAll('[data-category]');
-
-              chips.forEach(chip => {
-                chip.addEventListener('click', () => {
-                  const filter = chip.dataset.filter;
-
-                  chips.forEach(c => {
-                    c.classList.remove('filter-active', 'text-text', 'dark:text-text-dark');
-                    c.classList.add('text-sub', 'dark:text-sub-dark');
-                  });
-                  chip.classList.add('filter-active', 'text-text', 'dark:text-text-dark');
-                  chip.classList.remove('text-sub', 'dark:text-sub-dark');
-
-                  cards.forEach(card => {
-                    if (filter === 'all' || card.dataset.category === filter) {
-                      card.style.display = '';
-                    } else {
-                      card.style.display = 'none';
-                    }
-                  });
-                });
+            document.querySelector('[data-filters]').addEventListener('click', ({ target }) => {
+              const chip = target.closest('.filter-chip');
+              if (!chip) return;
+              document.querySelectorAll('.filter-chip').forEach(c => {
+                c.classList.toggle('filter-active', c === chip);
+                c.classList.toggle('text-text', c === chip);
+                c.classList.toggle('dark:text-text-dark', c === chip);
+                c.classList.toggle('text-sub', c !== chip);
+                c.classList.toggle('dark:text-sub-dark', c !== chip);
+              });
+              document.querySelectorAll('[data-category]').forEach(card => {
+                card.hidden = chip.dataset.filter !== 'all' && card.dataset.category !== chip.dataset.filter;
               });
             });
           `,

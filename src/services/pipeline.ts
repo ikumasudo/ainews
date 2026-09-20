@@ -1,4 +1,3 @@
-import type { Env } from "../types.ts";
 import { fetchRSSFeed, normalizeDate } from "./rss.ts";
 import {
   saveDigest,
@@ -7,14 +6,13 @@ import {
 } from "./db.ts";
 import { extractHighlights } from "./ai.ts";
 
-export async function processFeedsAndClearCache(env: Env): Promise<{
+export async function processFeeds(env: Env): Promise<{
   fetched: number;
   new_digests: number;
   processed: number;
 }> {
   // 1. Fetch and save new RSS items
   const items = await fetchRSSFeed();
-  const affectedDates = new Set<string>();
   let newCount = 0;
 
   for (const item of items) {
@@ -28,7 +26,6 @@ export async function processFeedsAndClearCache(env: Env): Promise<{
     });
     if (digestId > 0) {
       newCount++;
-      affectedDates.add(date);
     }
   }
 
@@ -40,22 +37,10 @@ export async function processFeedsAndClearCache(env: Env): Promise<{
     try {
       const highlights = await extractHighlights(env.OPENROUTER_API_KEY, digest.raw_content);
       await saveHighlights(env.DB, digest.id, highlights);
-      affectedDates.add(digest.date);
       processedCount++;
     } catch (e) {
       console.error(`Failed to process digest ${digest.date}:`, e);
     }
-  }
-
-  // 3. Clear caches only for affected dates
-  if (affectedDates.size > 0) {
-    await Promise.all([
-      env.CACHE.delete("api:dates"),
-      ...[...affectedDates].flatMap((d) => [
-        env.CACHE.delete(`page:${d}`),
-        env.CACHE.delete(`api:highlights:${d}`),
-      ]),
-    ]);
   }
 
   return { fetched: items.length, new_digests: newCount, processed: processedCount };
